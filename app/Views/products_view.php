@@ -40,7 +40,7 @@ $page_session = \CodeIgniter\Config\Services::session();
 							<!-- Button trigger modal -->
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                             <i class="icon-copy bi bi-bag-plus-fill m-1"></i>
-                                Add Category
+                                Add A Product
                             </button>
 						</div>
 
@@ -112,41 +112,35 @@ $page_session = \CodeIgniter\Config\Services::session();
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Supplier</h1>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Product</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <?= form_open() ?>
+                    <?= form_open('dashboard/products', ['id' => 'addProduct']) ?>
                     <div class="row">
 						<div class="form-group col">
 							<label>Product Name</label>
-							<input type="text" class="form-control">
+							<input type="text" class="form-control" name="product_name">
 						</div>
 						<div class="form-group col">
                         <label>Category</label>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" name="category">
                     </div>
 					</div>
 
-
-                    
-                    <div class="form-group">
-                        <label>Expiry Date</label>
-                        <input type="text" class="form-control">
-                    </div>
                     <div class="form-group">
                         <label>Price</label>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" name="price">
                     </div>
 					<div class="form-group">
                         <label>In Stock</label>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" name="in_stock">
                     </div>
                     <?= form_close() ?>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button id="submitButton" type="button" class="btn btn-primary">Submit</button>
+                    <input id="submitButton" type="submit" form="addProduct" class="btn btn-primary" value="Submit"></input>
                 </div>
             </div>
         </div>
@@ -155,7 +149,7 @@ $page_session = \CodeIgniter\Config\Services::session();
 </div>
 
 <!-- Add JavaScript for the loading indicator -->
-<script>
+<!-- <script>
     document.addEventListener('DOMContentLoaded', function() {
         var modalForm = document.getElementById('staticBackdrop').querySelector('form');
         var modalSubmitButton = document.getElementById('submitButton');
@@ -179,7 +173,7 @@ $page_session = \CodeIgniter\Config\Services::session();
             }, 2000); // 2000 milliseconds = 2 seconds (change this time as needed)
         });
     });
-</script>
+</script> -->
 
     
 <?= $this->endSection(); ?>

@@ -29,7 +29,19 @@ $page_session = \CodeIgniter\Config\Services::session();
 						</div>
 					</div>
 
-					
+					<?php if($page_session->getTempdata('supplier_delete')):?>
+						<div class="alert alert-success alert-dismissible fade show" role="alert">
+							<?= $page_session->getTempdata('supplier_delete')?>
+							<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					<?php endif;?>
+
+					<?php if($page_session->getTempdata('supplier_success')):?>
+						<div class="alert alert-success alert-dismissible fade show" role="alert">
+							<?= $page_session->getTempdata('supplier_success')?>
+							<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					<?php endif;?>
 
 
 					<!-- Simple Datatable start -->
@@ -46,6 +58,7 @@ $page_session = \CodeIgniter\Config\Services::session();
 						<div class="pb-20">
 
 							<!-- if -->
+							<?php if(count($suppliers)):?>
 								<table class="data-table table stripe hover nowrap">
 								<thead>
 									<tr>
@@ -61,13 +74,14 @@ $page_session = \CodeIgniter\Config\Services::session();
 								<tbody>
 									
 								<!-- foreach -->
+								<?php foreach($suppliers as $sup):?>
 									<tr>
-										<td>1</td>
-                                        <td>Huduma Stores</td>
-                                        <td>Huduma Stores</td>
-										<td>Chogoria</td>
-                                        <td>huduma@info.com</td>
-                                        <td>0111710009</td>
+										<td><?= $sup['id']?></td>
+                                        <td><?= $sup['supplier_name']?></td>
+                                        <td><?= $sup['company']?></td>
+										<td><?= $sup['location']?></td>
+                                        <td><?= $sup['email']?></td>
+                                        <td><?= $sup['phone']?></td>
 										<td>
 											<div class="dropdown">
 												<a
@@ -85,17 +99,23 @@ $page_session = \CodeIgniter\Config\Services::session();
 													<a class="dropdown-item" href="<?= base_url().'dashboard/edit-supplier/'?>"
 														><i class="dw dw-edit2"></i> Edit</a
 													>
-													<a class="dropdown-item" href="<?= base_url().'dashboard/delete-supplier/'?>"
+													<a class="dropdown-item" href="<?= base_url().'dashboard/delete-supplier/' .$sup['id']?>"
 														><i class="dw dw-delete-3"></i> Delete</a
 													>
 												</div>
 											</div>
 										</td> 
 									</tr>
+								<?php endforeach;?>
 								<!-- endforeach -->
 
 								</tbody>
-							</table>
+								</table>
+							<?php else:?>
+								<p class="d-flex justify-content-center align-items text-danger">
+									No Available suppliers
+								</p>
+							<?php endif;?>
 							<!-- endif -->
 
 
@@ -112,29 +132,41 @@ $page_session = \CodeIgniter\Config\Services::session();
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Supplier</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+				<?php if(isset($validation)):?>
+					<div class="alert alert-danger alert-dismissible fade show" role="alert">
+						<?= $validation->listErrors()?>
+						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
+				<?php endif;?>
+				
+
                 <div class="modal-body">
-                    <?= form_open() ?>
+                    <?= form_open('dashboard/suppliers', ['id' => 'addSupplier']) ?>
                     <div class="form-group">
                         <label>Supplier's Name</label>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" name="supplier_name" value="<?= set_value('James')?>">
                     </div>
                     <div class="form-group">
                         <label>Company Name</label>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" name="company">
+                    </div>
+					<div class="form-group">
+                        <label>Location</label>
+                        <input type="text" class="form-control" name="location">
                     </div>
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" class="form-control">
+                        <input type="email" class="form-control" name="email">
                     </div>
                     <div class="form-group">
                         <label>Phone Number</label>
-                        <input type="tel" class="form-control">
+                        <input type="tel" class="form-control" name="phone">
                     </div>
                     <?= form_close() ?>
                 </div>
                 <div class="modal-footer">
+					<input type="submit" value="Submit" form="addSupplier" id="submitButton" class="btn btn-primary">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button id="submitButton" type="button" class="btn btn-primary">Submit</button>
                 </div>
             </div>
         </div>
@@ -144,29 +176,30 @@ $page_session = \CodeIgniter\Config\Services::session();
 
 <!-- Add JavaScript for the loading indicator -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var modalForm = document.getElementById('staticBackdrop').querySelector('form');
-        var modalSubmitButton = document.getElementById('submitButton');
+document.addEventListener('DOMContentLoaded', function() {
+    var addSupplierForm = document.getElementById('addSupplier');
+    var submitButton = document.getElementById('submitButton');
 
-        modalSubmitButton.addEventListener('click', function() {
-            var button = this;
-            button.disabled = true; // Disable the button to prevent multiple clicks
-            button.innerHTML = `
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                Please Wait...
-            `;
-            // Simulate a backend action with a setTimeout
-            setTimeout(function() {
-                // Once the backend action is complete re-enable the button and change its text back
-                button.disabled = false;
-                button.innerHTML = 'Submit';
-                // Close the modal (optional)
-                // $('#staticBackdrop').modal('hide');
-                // Reset the form fields (optional)
-                // modalForm.reset();
-            }, 2000); // 2000 milliseconds = 2 seconds (change this time as needed)
-        });
+    addSupplierForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission behavior
+        
+        var button = submitButton;
+        button.disabled = true; // Disable the button to prevent multiple clicks
+        button.value = 'Please Wait...'  // Update button HTML to indicate loading
+        
+        // Simulate a backend action with a setTimeout
+        setTimeout(function() {
+            // Once the backend action is complete (after 2 seconds in this example), re-enable the button and change its HTML back
+            button.disabled = false;
+            button.innerHTML = 'Submit';
+            
+            // Manually submit the form
+            addSupplierForm.submit();
+        }, 2000); // 2000 milliseconds = 2 seconds (change this time as needed)
     });
+});
+
+
 </script>
     
 <?= $this->endSection(); ?>

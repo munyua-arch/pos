@@ -29,7 +29,19 @@ $page_session = \CodeIgniter\Config\Services::session();
 						</div>
 					</div>
 
-					
+					<?php if($page_session->getTempdata('product_success')):?>
+						<div class="alert alert-success alert-dismissible fade show" role="alert">
+							<?= $page_session->getTempdata('product_success')?>
+							<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					<?php endif;?>
+
+					<?php if($page_session->getTempdata('product_error')):?>
+						<div class="alert alert-success alert-dismissible fade show" role="alert">
+							<?= $page_session->getTempdata('product_error')?>
+							<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					<?php endif;?>
 
 
 					<!-- Simple Datatable start -->
@@ -47,13 +59,13 @@ $page_session = \CodeIgniter\Config\Services::session();
 						<div class="pb-20">
 
 							<!-- if -->
+							<?php if(count($products)):?>
 								<table class="data-table table stripe hover nowrap">
 								<thead>
 									<tr>
 										<th class="table-plus datatable-nosort">S/N</th>
 										<th>Product Name</th>
                                         <th>Category</th>
-										<th>Expire Date</th>
 										<th>Price</th>
                                         <th>In Stock</th>
                                         <th>Status</th>
@@ -63,14 +75,20 @@ $page_session = \CodeIgniter\Config\Services::session();
 								<tbody>
 									
 								<!-- foreach -->
+								<?php foreach($products as $product):?>
 									<tr>
-										<td>1</td>
-                                        <td>Cement</td>
-                                        <td>Building Material</td>
-                                        <td>April 2nd, 2025</td>
-                                        <td>KES 550</td>
-                                        <td>120</td>
-                                        <td>Available</td>
+										<td><?= $product['id']?></td>
+                                        <td><?= $product['product_name']?></td>
+                                        <td><?= $product['category']?></td>
+                                        <td><?= 'KES'." ".$product['price']?></td>
+                                        <td><?= $product['in_stock']?></td>
+                                        <td>
+											<?php 
+											$statusClass = ($product['in_stock'] > 0) ? 'text-bg-success' : 'text-bg-danger';
+											$statusText = ($product['in_stock'] > 0) ? 'Available' : 'Unavailable';
+											?>
+											<span class="badge <?= $statusClass ?>"><?= $statusText ?></span>
+										</td>
 										<td>
 											<div class="dropdown">
 												<a
@@ -95,10 +113,12 @@ $page_session = \CodeIgniter\Config\Services::session();
 											</div>
 										</td> 
 									</tr>
+								<?php endforeach;?>
 								<!-- endforeach -->
 
 								</tbody>
 							</table>
+							<?php endif;?>
 							<!-- endif -->
 
 
@@ -134,7 +154,7 @@ $page_session = \CodeIgniter\Config\Services::session();
                     </div>
 					<div class="form-group">
                         <label>In Stock</label>
-                        <input type="text" class="form-control" name="in_stock">
+                        <input type="number" class="form-control" name="in_stock">
                     </div>
                     <?= form_close() ?>
                 </div>
@@ -150,29 +170,30 @@ $page_session = \CodeIgniter\Config\Services::session();
 
 <!-- Add JavaScript for the loading indicator -->
 <!-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var modalForm = document.getElementById('staticBackdrop').querySelector('form');
-        var modalSubmitButton = document.getElementById('submitButton');
+document.addEventListener('DOMContentLoaded', function() {
+    var addProductForm = document.getElementById('addProduct');
+    var submitButton = document.getElementById('submitButton');
 
-        modalSubmitButton.addEventListener('click', function() {
-            var button = this;
-            button.disabled = true; // Disable the button to prevent multiple clicks
-            button.innerHTML = `
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                Please Wait...
-            `;
-            // Simulate a backend action with a setTimeout
-            setTimeout(function() {
-                // Once the backend action is complete re-enable the button and change its text back
-                button.disabled = false;
-                button.innerHTML = 'Submit';
-                // Close the modal (optional)
-                // $('#staticBackdrop').modal('hide');
-                // Reset the form fields (optional)
-                // modalForm.reset();
-            }, 2000); // 2000 milliseconds = 2 seconds (change this time as needed)
-        });
+    addProductForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission behavior
+        
+        var button = submitButton;
+        button.disabled = true; // Disable the button to prevent multiple clicks
+        button.value = 'Please Wait...'  // Update button HTML to indicate loading
+        
+        // Simulate a backend action with a setTimeout
+        setTimeout(function() {
+            // Once the backend action is complete (after 2 seconds in this example), re-enable the button and change its HTML back
+            button.disabled = false;
+            button.innerHTML = 'Submit';
+            
+            // Manually submit the form
+            addSupplierForm.submit();
+        }, 2000); // 2000 milliseconds = 2 seconds (change this time as needed)
     });
+});
+
+
 </script> -->
 
     

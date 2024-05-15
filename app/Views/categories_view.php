@@ -30,6 +30,19 @@ $page_session = \CodeIgniter\Config\Services::session();
 					</div>
 
 					
+					<?php if($page_session->getTempdata('category_success')):?>
+						<div class="alert alert-success alert-dismissible fade show" role="alert">
+							<?= $page_session->getTempdata('category_success')?>
+							<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					<?php endif;?>
+
+					<?php if($page_session->getTempdata('category_error')):?>
+						<div class="alert alert-success alert-dismissible fade show" role="alert">
+							<?= $page_session->getTempdata('category_error')?>
+							<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					<?php endif;?>
 
 
 					<!-- Simple Datatable start -->
@@ -107,17 +120,17 @@ $page_session = \CodeIgniter\Config\Services::session();
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <?= form_open() ?>
+                    <?= form_open('dashboard/categories', ['id' => 'addCategory']) ?>
                     <div class="form-group">
                         <label>Category Name</label>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" name="category_name">
                     </div>
                     
                     <?= form_close() ?>
                 </div>
                 <div class="modal-footer">
+					<input type="submit" form="addCategory" class="btn btn-primary" value="Submit">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button id="submitButton" type="button" class="btn btn-primary">Submit</button>
                 </div>
             </div>
         </div>
@@ -126,7 +139,7 @@ $page_session = \CodeIgniter\Config\Services::session();
 </div>
 
 <!-- Add JavaScript for the loading indicator -->
-<script>
+<!-- <script>
     document.addEventListener('DOMContentLoaded', function() {
         var modalForm = document.getElementById('staticBackdrop').querySelector('form');
         var modalSubmitButton = document.getElementById('submitButton');
@@ -150,7 +163,7 @@ $page_session = \CodeIgniter\Config\Services::session();
             }, 2000); // 2000 milliseconds = 2 seconds (change this time as needed)
         });
     });
-</script>
+</script> -->
 
     
 <?= $this->endSection(); ?>

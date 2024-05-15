@@ -96,10 +96,10 @@ $page_session = \CodeIgniter\Config\Services::session();
 													class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list"
 												>
 												
-													<a class="dropdown-item" href="<?= base_url().'dashboard/edit-supplier/'?>"
+													<a class="dropdown-item" href="<?= base_url().'dashboard/edit-supplier/'.$sup['id']?>"
 														><i class="dw dw-edit2"></i> Edit</a
 													>
-													<a class="dropdown-item" href="<?= base_url().'dashboard/delete-supplier/' .$sup['id']?>"
+													<a class="dropdown-item" href="<?= base_url().'dashboard/delete-supplier/'.$sup['id']?>"
 														><i class="dw dw-delete-3"></i> Delete</a
 													>
 												</div>

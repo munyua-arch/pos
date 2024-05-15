@@ -20,6 +20,12 @@
 							</a>
 						</li>
 						<li>
+							<a href="<?= base_url().'dashboard/create-order'?>" class="dropdown-toggle no-arrow">
+								<span class="micon bi bi-cart-plus-fill"></span>
+								<span class="mtext">Create Order</span>
+							</a>
+						</li>
+						<li>
 							<a href="<?= base_url().'dashboard/suppliers'?>" class="dropdown-toggle no-arrow">
 								<span class="micon bi bi-people"></span>
 								<span class="mtext">Suppliers</span>

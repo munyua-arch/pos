@@ -17,12 +17,12 @@ $page_session = \CodeIgniter\Config\Services::session();
 							<?= form_open()?>
 								
 								<div class="input-group custom">
-									<input
-										type="email"
-										class="form-control form-control-lg"
-										placeholder="Username"
-										name="email"
-									/>
+								<input 
+									type="email" 
+									class="form-control form-control-lg" 
+									placeholder="ian212@gmail.com"
+									name="email"
+								>
 									<div class="input-group-append custom">
 										<span class="input-group-text"
 											><i class="icon-copy dw dw-user1"></i
@@ -30,12 +30,12 @@ $page_session = \CodeIgniter\Config\Services::session();
 									</div>
 								</div>
 								<div class="input-group custom">
-									<input
-										type="password"
-										class="form-control form-control-lg"
-										placeholder="**********"
-										name="password"
-									/>
+								<input 
+									type="password" 
+									class="form-control form-control-lg" 
+									placeholder="******"
+									name="password"
+								>
 									<div class="input-group-append custom">
 										<span class="input-group-text"
 											><i class="dw dw-padlock1"></i
@@ -56,12 +56,31 @@ $page_session = \CodeIgniter\Config\Services::session();
 								<div class="row">
 									<div class="col-sm-12">
 										<div class="input-group mb-0">
-											<input type="submit" value="Sign In" class="btn btn-primary btn-block">
+											<input type="submit" class="btn btn-block btn-primary">
 										</div>
 								</div>
 								
 							<?= form_close()?>
 						</div>
+
+						<?= form_open()?>
+								<div class="form-group">
+									
+								</div>
+
+								<div class="form-group">
+									
+								</div>
+
+								
+							<?= form_close()?>
+
+						
 					</div> 
+					<div class="d-flex justify-content-center mt-5">
+					<p>Are you an <strong>Admin</strong>? <a href="<?= base_url().'admin-login'?>">Login Here</a></p>
+					</div>
 </div>
+
+
 <?= $this->endSection() ?>

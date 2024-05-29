@@ -12,20 +12,39 @@ class OrderModel extends Model
     protected $returnType       = 'array';
     protected $allowedFields    = ['id', 'product_name', 'price', 'quantity', 'total_price'];
 
-    public function getPrice($productName, $quantity)
+    public function getPrice($productName, $quantity, $id)
     {
         $productModel = new ProductModel();
-        $price = $productModel->getProductPrice($productName);
+        // $price = $productModel->getProductPrice($productName);
+        $product = $productModel->where('product_name', $productName)->first();
 
-        $totalPrice = $price * $quantity;
+        if ($product) 
+        {
+            // get the price of the product from the products table
+            $price = $product['price'];
+            $totalPrice = $price * $quantity;
 
-        $this->insert(
-            [
-                'product_name' => $productName,
-                'price' => $price,
-                'quantity' => $quantity,
-                'total_price' => $totalPrice
-            ]);
+            // deduct stock and update the table 
+            if ($productModel->deductStock($productName, $quantity, $id))
+            {
+                return $this->insert(
+                [
+                    'product_name' => $productName,
+                    'price' => $price,
+                    'quantity' => $quantity,
+                    'total_price' => $totalPrice
+                ]);
+            }
+            // else
+            // {
+            //     return false;
+            // }
+        }
+        // else
+        // {
+        //     return 'Insufficient Product.';
+        // }
+        
     }
 
     public function getTotal()

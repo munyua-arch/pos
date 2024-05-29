@@ -48,6 +48,15 @@ $page_session = \CodeIgniter\Config\Services::session();
                                 <?php endif;?>
                         <!-- Display invalid form errors -->
 
+                        <!-- cancel order success -->
+                        <?php if($page_session->has('cancel_success')): ?>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <?= $page_session->get('cancel_success') ?>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        <?php endif;?>
+                        <!-- cancel order success -->
+
                         
                         <?php if($page_session->has('order_success')): ?>
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -67,11 +76,16 @@ $page_session = \CodeIgniter\Config\Services::session();
 						<?= form_open();?>
                         <div class="row">
                             <div class="col">
-                                <div class="form-group">
-                                    <label>Product</label>
-                                    <input type="text" class="form-control" name="product_name">
+                                <label>Products</label>
+                                <select class="form-select" aria-label="Default select example" name="product_name">
+                                    <option selected>-- Select Product --</option>
+                                    <?php if(count($products)):?>
+                                        <?php foreach($products as $product):?>
+                                            <option value="<?= $product['product_name']?>"><?= $product['product_name']?></option>
+                                        <?php endforeach;?>
+                                    <?php endif;?>
                                     
-                                </div>
+                                </select>
                             </div>
                             <div class="col">
                                 <div class="form-group">
@@ -135,7 +149,7 @@ $page_session = \CodeIgniter\Config\Services::session();
 
                                         <td><?= $order['total_price']?></td>
                                         <td>
-                                            <button class="btn btn-danger">Cancel</button>
+                                            <a href="<?= base_url().'dashboard/cancel-order/'.$order['id']?>?>" class="btn btn-outline-danger">Cancel</a>
                                         </td>
                                         </tr>
                                     </tbody>
@@ -146,7 +160,7 @@ $page_session = \CodeIgniter\Config\Services::session();
                         <?php endif;?>
 
                         <div class="d-dlex justify-content-end">
-                            <a href="<?= base_url().'dashboard/order-summary'?>" class="btn btn-lg btn-warning">Proceed to place order</a>
+                            <a href="<?= base_url().'dashboard/order-summary'?>" class="btn btn-lg btn-primary" id="checkout-btn" >Proceed to place order</a>
                         </div>
                         <!-- products table end -->
 
@@ -155,28 +169,62 @@ $page_session = \CodeIgniter\Config\Services::session();
 
 <script>
     // Get all quantity buttons and their related elements
-    const decreaseButtons = document.querySelectorAll('.decrease-btn');
-    const quantityButtons = document.querySelectorAll('.quantity-btn');
-    const increaseButtons = document.querySelectorAll('.increase-btn');
+const decreaseButtons = document.querySelectorAll('.decrease-btn');
+const quantityButtons = document.querySelectorAll('.quantity-btn');
+const increaseButtons = document.querySelectorAll('.increase-btn');
+const placeOrderBtn = document.getElementById('checkout-btn');
 
-    // Add event listeners to handle quantity changes
-    decreaseButtons.forEach((button, index) => {
-        button.addEventListener('click', () => {
-            // Decrease quantity by 1 if greater than 1
-            if (parseInt(quantityButtons[index].innerText) > 1) {
-                quantityButtons[index].innerText = parseInt(quantityButtons[index].innerText) - 1;
-                // You can also update the quantity in your backend via AJAX if needed
-            }
-        });
+// Function to send AJAX request to update quantity in the database
+function updateQuantity(productName, quantity) {
+    fetch('dashboard/update-quantity', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest' // Indicate it's an AJAX request
+        },
+        body: JSON.stringify({ product_name: productName, quantity: quantity })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            console.log('Quantity updated successfully');
+        } else {
+            console.error('Error updating quantity:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
     });
+}
 
-    increaseButtons.forEach((button, index) => {
-        button.addEventListener('click', () => {
-            // Increase quantity by 1
-            quantityButtons[index].innerText = parseInt(quantityButtons[index].innerText) + 1;
-            // You can also update the quantity in your backend via AJAX if needed
-        });
+// Add event listeners to handle quantity changes
+decreaseButtons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+        // Decrease quantity by 1 if greater than 1
+        if (parseInt(quantityButtons[index].innerText) > 1) {
+            quantityButtons[index].innerText = parseInt(quantityButtons[index].innerText) - 1;
+            const productName = quantityButtons[index].dataset.productName; // Assuming you have data-product-name attribute
+            const newQuantity = parseInt(quantityButtons[index].innerText);
+            // updateQuantity(productName, newQuantity); // Update the backend
+        }
     });
+});
+
+increaseButtons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+        // Increase quantity by 1
+        quantityButtons[index].innerText = parseInt(quantityButtons[index].innerText) + 1;
+        const productName = quantityButtons[index].dataset.productName; // Assuming you have data-product-name attribute
+        const newQuantity = parseInt(quantityButtons[index].innerText);
+        // updateQuantity(productName, newQuantity); // Update the backend
+    });
+});
+
+
+// ONCLICK EVENT LISTNER
+placeOrderBtn.addEventListener("click", async ()=>{
+   await updateQuantity(productName, newQuantity)
+})
 </script>
 
 <?= $this->endSection(); ?>

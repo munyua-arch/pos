@@ -31,10 +31,13 @@ class Dashboard extends BaseController
     {
         $data = [];
         $data['cartTotal'] = $this->orderModel->getTotal();
+     
 
         // pull data from db to display
         $data['orders'] = $this->orderModel->findAll();
+        $data['products'] = $this->productModel->findAll();
  
+        // rules to ensure the form is valid before storing in database
         $rules = [
             'product_name' => 'required',
             'quantity' => 'required'
@@ -50,17 +53,21 @@ class Dashboard extends BaseController
                     'quantity' => $this->request->getPost('quantity', FILTER_SANITIZE_STRING)
                 ];
 
-                $saveData = $this->orderModel->getPrice($orderData['product_name'], $orderData['quantity']);
+                $product = $this->productModel->where('product_name', $orderData['product_name'])->first();
 
-                if ($saveData) {
-                    session()->setFlashdata('order_success', 'Items added successfully');
-                    return redirect()->to(current_url());
+                $saveData = $this->orderModel->getPrice($orderData['product_name'], $orderData['quantity'], $product['id']);
+
+               
+                if ($saveData) 
+                {
+                 
+                    session()->setTempdata('order_success', 'New item(s) added to cart successfully!');    
                 }
                 else
                 {
-                    session()->setFlashdata('order_error', 'Failed to add item, please try again!');
-                    return redirect()->to(current_url());
+                    session()->setTempdata('order_error', 'Failed to add item(s) to cart!');
                 }
+                
             }
             else
             {
@@ -69,6 +76,38 @@ class Dashboard extends BaseController
         }
 
         return view('create_order_view', $data);
+    }
+
+    public function updateQuantity()
+    {
+        // Check if it's an AJAX request
+        if ($this->request->isAJAX()) {
+            $productName = $this->request->getPost('product_name');
+            $quantity = $this->request->getPost('quantity');
+
+            // Call the model function to update the quantity
+            $saveData = $this->orderModel->getPrice($productName, $quantity);
+
+            if ($saveData) {
+                return $this->response->setJSON(['status' => 'success']);
+            } else {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Failed to update quantity']);
+            }
+        }
+
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Invalid request']);
+    }
+
+    public function cancelOrder( $id = null)
+    {
+        if ($this->orderModel->where('id', $id)->delete()) 
+        {
+            session()->setTempdata('cancel_success', 'Item(s) removed successfully');
+            return redirect()->to(base_url().'dashboard/create-order');
+        }
+
+        // return the original number of stock to its original value
+        
     }
 
     public function orderSummary()
@@ -87,62 +126,12 @@ class Dashboard extends BaseController
         $data['suppliers'] = $this->suppliersModel->paginate(10);
         $data['pager'] = $this->suppliersModel->pager;
 
-        $rules = [
-            'supplier_name' => 'required',
-            'company' => 'required',
-            'location' => 'required',
-            'email' => 'required|valid_email',
-            'phone' => 'required|max_length[10]'
-        ];
-
-        if ($this->request->is('post')) 
-        {
-            if ($this->validate($rules)) 
-            {
-                // save data to db
-                $supplierData = [
-                    'supplier_name' => $this->request->getPost('supplier_name', FILTER_SANITIZE_STRING),
-                    'company' => $this->request->getPost('company', FILTER_SANITIZE_STRING),
-                    'location' => $this->request->getPost('location', FILTER_SANITIZE_STRING),
-                    'email' => $this->request->getPost('email', FILTER_SANITIZE_STRING),
-                    'phone' => $this->request->getPost('phone', FILTER_SANITIZE_STRING)
-                ];
-
-                if ($this->suppliersModel->save($supplierData)) 
-                {
-                    session()->setTempdata('supplier_success', 'New supplier added successfully!');
-                }
-                else
-                {
-                    session()->setTempdata('supplier_error', 'Failed to add supplier, please try again');
-                }
-            }
-            else
-            {
-                echo "Not valid";   
-                // $data['validation'] = $this->validator;
-            }
-        }
-
         return view('suppliers_view', $data);
     }
 
-    public function editSupplier($id = null)
-    {
-        //find data based on the id
-        $data['editSupplier'] = $this->suppliersModel->where('id', $id)->find();
+    
 
-        return view('edit_supplier_view', $data);
-    }
-
-    public function deleteSupplier($id = null)
-    {
-        if ($this->suppliersModel->where('id', $id)->delete()) {
-            session()->setTempdata('supplier_delete', 'Supplier deleted successfully!');
-        }
-
-        return redirect()->to(base_url().'dashboard/suppliers');
-    }
+    
 
     public function products()
     {
@@ -150,35 +139,6 @@ class Dashboard extends BaseController
         $data['products'] = $this->productModel->paginate(10);
         $data['pager'] = $this->productModel->pager;
 
-        $rules = [
-            'product_name' => 'required',
-            'category' => 'required',
-            'price' => 'required',
-            'in_stock' => 'required'
-        ];
-
-        if ($this->request->is('post')) 
-        {
-            if ($this->validate($rules)) 
-            {
-                //grab the form data and save to db
-                $productData = [
-                    'product_name' => $this->request->getPost('product_name', FILTER_SANITIZE_STRING),
-                    'category' => $this->request->getPost('category', FILTER_SANITIZE_STRING),
-                    'price' => $this->request->getPost('price', FILTER_SANITIZE_STRING),
-                    'in_stock' => $this->request->getPost('in_stock', FILTER_SANITIZE_STRING)
-                ];
-
-                if ($this->productModel->save($productData)) 
-                {
-                    session()->setTempdata('product_success', 'New Product added successfully');
-                }
-                else
-                {
-                    session()->setTempdata('product_error', 'Failed to add product, please try again');
-                }
-            }
-        }
         return view('products_view', $data);
     }
 

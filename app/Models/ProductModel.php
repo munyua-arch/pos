@@ -24,8 +24,64 @@ class ProductModel extends Model
            return $result;
         }
         else {
-            echo 'Price not found';
+            return false;
         }
     }
+
+    // function to deduct stock
+    // public function deductStock($productName, $quantity)
+    // {
+    //     $product = $this->where('product_name', $productName)->first();
+
+    //     if ($product) {
+    //         // deduct stock
+    //         $newStock = $product['in_stock'] - $quantity;
+    //         // update the new number to db
+    //      return $this->update($product['product_name'], ['in_stock' => $newStock]);
+    //     }
+    //     else
+    //     {
+    //         return false;
+    //     }
+    // }
+
+    public function deductStock($productName, $quantity, $id)
+    {
+        // Start transaction
+        $this->db->transBegin();
+
+        // Fetch the product by its name
+        $product = $this->where('product_name', $productName)->first();
+
+        if ($product) {
+            // Check if there's enough stock
+            if ($product['in_stock'] >= $quantity) {
+                // Deduct stock
+                $newStock = $product['in_stock'] - $quantity;
+
+                // Update the new number in the database
+                $updateResult = $this->update($product['id'], ['in_stock' => $newStock]);
+
+                if ($updateResult) {
+                    // Commit transaction
+                    $this->db->transCommit();
+                    return true;
+                } else {
+                    // Rollback transaction
+                    $this->db->transRollback();
+                    return false;
+                }
+            } else {
+                // Rollback transaction
+                $this->db->transRollback();
+                return false; // Not enough stock
+            }
+        } else {
+            // Rollback transaction
+            $this->db->transRollback();
+            return false; // Product not found
+        }
+    }
+
     
 }

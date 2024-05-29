@@ -5,7 +5,7 @@ $page_session = \CodeIgniter\Config\Services::session();
 
 ?>
 
-<?= $this->extend('backend/page-layouts'); ?>
+<?= $this->extend('backend/admin-layouts'); ?>
 <?= $this->section('content'); ?>
 
 				<div class="min-height-200px">
@@ -18,7 +18,7 @@ $page_session = \CodeIgniter\Config\Services::session();
 								<nav aria-label="breadcrumb" role="navigation">
 									<ol class="breadcrumb">
 										<li class="breadcrumb-item">
-											<a href="<?= base_url().'dashboard/'?>">Home</a>
+											<a href="<?= base_url().'admindashboard'?>">Home</a>
 										</li>
 										<li class="breadcrumb-item active" aria-current="page">
 											Suppliers
@@ -29,7 +29,19 @@ $page_session = \CodeIgniter\Config\Services::session();
 						</div>
 					</div>
 
-					
+					<?php if($page_session->getTempdata('supplier_delete')):?>
+						<div class="alert alert-success alert-dismissible fade show" role="alert">
+							<?= $page_session->getTempdata('supplier_delete')?>
+							<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					<?php endif;?>
+
+					<?php if($page_session->getTempdata('supplier_success')):?>
+						<div class="alert alert-success alert-dismissible fade show" role="alert">
+							<?= $page_session->getTempdata('supplier_success')?>
+							<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					<?php endif;?>
 
 
 					<!-- Simple Datatable start -->
@@ -37,10 +49,10 @@ $page_session = \CodeIgniter\Config\Services::session();
 						<div class="pd-20 d-flex justify-content-between align-items-center">
 							<h4 class="text-blue h4">Suppliers Information</h4>
                             
-							<!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+							<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
 							<i class="icon-copy bi bi-person-plus-fill m-1"></i>
                             Add Suppliers
-                            </button> -->
+                            </button>
 						</div>
 
 						<div class="pb-20">
@@ -56,6 +68,7 @@ $page_session = \CodeIgniter\Config\Services::session();
 										<th>Location</th>
 										<th>Email</th>
 										<th>Phone Number</th>
+										<th class="datatable-nosort">Action</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -69,7 +82,29 @@ $page_session = \CodeIgniter\Config\Services::session();
 										<td><?= $sup['location']?></td>
                                         <td><?= $sup['email']?></td>
                                         <td><?= $sup['phone']?></td>
-										
+										<td>
+											<div class="dropdown">
+												<a
+													class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle"
+													href="#"
+													role="button"
+													data-toggle="dropdown"
+												>
+													<i class="dw dw-more"></i>
+												</a>
+												<div
+													class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list"
+												>
+												
+													<a class="dropdown-item" href="<?= base_url().'dashboard/edit-supplier/'.$sup['id']?>"
+														><i class="dw dw-edit2"></i> Edit</a
+													>
+													<a class="dropdown-item" href="<?= base_url().'dashboard/delete-supplier/'.$sup['id']?>"
+														><i class="dw dw-delete-3"></i> Delete</a
+													>
+												</div>
+											</div>
+										</td> 
 									</tr>
 								<?php endforeach;?>
 								<!-- endforeach -->
@@ -106,7 +141,7 @@ $page_session = \CodeIgniter\Config\Services::session();
 				
 
                 <div class="modal-body">
-                    <?= form_open('dashboard/suppliers', ['id' => 'addSupplier']) ?>
+                    <?= form_open('admindashboard/admin-suppliers', ['id' => 'addSupplier']) ?>
                     <div class="form-group">
                         <label>Supplier's Name</label>
                         <input type="text" class="form-control" name="supplier_name" value="<?= set_value('James')?>">

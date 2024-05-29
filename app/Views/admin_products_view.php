@@ -5,7 +5,7 @@ $page_session = \CodeIgniter\Config\Services::session();
 
 ?>
 
-<?= $this->extend('backend/page-layouts'); ?>
+<?= $this->extend('backend/admin-layouts'); ?>
 <?= $this->section('content'); ?>
 
 				<div class="min-height-200px">
@@ -18,7 +18,7 @@ $page_session = \CodeIgniter\Config\Services::session();
 								<nav aria-label="breadcrumb" role="navigation">
 									<ol class="breadcrumb">
 										<li class="breadcrumb-item">
-											<a href="<?= base_url().'dashboard/'?>">Home</a>
+											<a href="<?= base_url().'admindashboard'?>">Home</a>
 										</li>
 										<li class="breadcrumb-item active" aria-current="page">
 											Products
@@ -29,7 +29,19 @@ $page_session = \CodeIgniter\Config\Services::session();
 						</div>
 					</div>
 
-					
+					<?php if($page_session->getTempdata('product_success')):?>
+						<div class="alert alert-success alert-dismissible fade show" role="alert">
+							<?= $page_session->getTempdata('product_success')?>
+							<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					<?php endif;?>
+
+					<?php if($page_session->getTempdata('product_error')):?>
+						<div class="alert alert-success alert-dismissible fade show" role="alert">
+							<?= $page_session->getTempdata('product_error')?>
+							<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					<?php endif;?>
 
 
 					<!-- Simple Datatable start -->
@@ -38,10 +50,10 @@ $page_session = \CodeIgniter\Config\Services::session();
 							<h4 class="text-blue h4">Products Information</h4>
                             
 							<!-- Button trigger modal -->
-                            <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                             <i class="icon-copy bi bi-bag-plus-fill m-1"></i>
                                 Add A Product
-                            </button> -->
+                            </button>
 						</div>
 
 						<div class="pb-20">
@@ -57,6 +69,7 @@ $page_session = \CodeIgniter\Config\Services::session();
 										<th>Price</th>
                                         <th>In Stock</th>
                                         <th>Status</th>
+										<th class="datatable-nosort">Action</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -76,6 +89,29 @@ $page_session = \CodeIgniter\Config\Services::session();
 											?>
 											<span class="badge <?= $statusClass ?>"><?= $statusText ?></span>
 										</td>
+										<td>
+											<div class="dropdown">
+												<a
+													class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle"
+													href="#"
+													role="button"
+													data-toggle="dropdown"
+												>
+													<i class="dw dw-more"></i>
+												</a>
+												<div
+													class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list"
+												>
+												
+													<a class="dropdown-item" href="<?= base_url().'dashboard/edit-supplier/'?>"
+														><i class="dw dw-edit2"></i> Edit</a
+													>
+													<a class="dropdown-item" href="<?= base_url().'dashboard/delete-supplier/'?>"
+														><i class="dw dw-delete-3"></i> Delete</a
+													>
+												</div>
+											</div>
+										</td> 
 									</tr>
 								<?php endforeach;?>
 								<!-- endforeach -->
@@ -100,7 +136,7 @@ $page_session = \CodeIgniter\Config\Services::session();
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <?= form_open('dashboard/products', ['id' => 'addProduct']) ?>
+                    <?= form_open('admindashboard/admin-products', ['id' => 'addProduct']) ?>
                     <div class="row">
 						<div class="form-group col">
 							<label>Product Name</label>

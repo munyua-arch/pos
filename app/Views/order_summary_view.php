@@ -20,6 +20,9 @@ $page_session = \CodeIgniter\Config\Services::session();
 										<li class="breadcrumb-item">
 											<a href="<?= base_url().'dashboard/'?>">Home</a>
 										</li>
+										<li class="breadcrumb-item">
+											<a href="<?= base_url().'dashboard/create-order'?>">Create Order</a>
+										</li>
 										<li class="breadcrumb-item active" aria-current="page">
 											Order Summary
 										</li>

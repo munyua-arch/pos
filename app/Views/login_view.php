@@ -10,19 +10,33 @@ $page_session = \CodeIgniter\Config\Services::session();
 <div class="col-md-6 col-lg-5">
 						<div class="login-box bg-white box-shadow border-radius-10">
 							<div class="login-title">
-								<h2 class="text-center text-primary">POS SYSTEM</h2>
+								<h2 class="text-center text-primary">POS LOGIN</h2>
 							</div>
 
+
+							<?php if(isset($validation)):?>
+								<div class="alert alert-danger alert-dismissible fade show" role="alert">
+									<?= $validation->listErrors()?>
+									<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+								</div>
+							<?php endif;?>
+
+							<?php if($page_session->getTempdata('login_error')):?>
+								<div class="alert alert-danger alert-dismissible fade show" role="alert">
+									<?= $page_session->getTempdata('login_error')?>
+									<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+								</div>
+							<?php endif;?>
 
 							<?= form_open()?>
 								
 								<div class="input-group custom">
-								<input 
-									type="email" 
-									class="form-control form-control-lg" 
-									placeholder="ian212@gmail.com"
-									name="email"
-								>
+									<input
+										type="email"
+										class="form-control form-control-lg"
+										placeholder="user@gmail.com"
+										name="email"
+									/>
 									<div class="input-group-append custom">
 										<span class="input-group-text"
 											><i class="icon-copy dw dw-user1"></i
@@ -30,12 +44,12 @@ $page_session = \CodeIgniter\Config\Services::session();
 									</div>
 								</div>
 								<div class="input-group custom">
-								<input 
-									type="password" 
-									class="form-control form-control-lg" 
-									placeholder="******"
-									name="password"
-								>
+									<input
+										type="password"
+										class="form-control form-control-lg"
+										placeholder="**********"
+										name="password"
+									/>
 									<div class="input-group-append custom">
 										<span class="input-group-text"
 											><i class="dw dw-padlock1"></i
@@ -56,31 +70,18 @@ $page_session = \CodeIgniter\Config\Services::session();
 								<div class="row">
 									<div class="col-sm-12">
 										<div class="input-group mb-0">
-											<input type="submit" class="btn btn-block btn-primary">
-										</div>
+											<input type="submit" value="Sign In" class="btn btn-primary btn-block">
+										</div>	
 								</div>
 								
 							<?= form_close()?>
 						</div>
 
-						<?= form_open()?>
-								<div class="form-group">
-									
-								</div>
-
-								<div class="form-group">
-									
-								</div>
-
-								
-							<?= form_close()?>
-
 						
 					</div> 
+
 					<div class="d-flex justify-content-center mt-5">
-					<p>Are you an <strong>Admin</strong>? <a href="<?= base_url().'admin-login'?>">Login Here</a></p>
+						<p>Are you an <strong>Admin</strong>? <a href="<?= base_url().'admin-login'?>">Login Here</a></p>
 					</div>
 </div>
-
-
 <?= $this->endSection() ?>

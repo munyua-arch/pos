@@ -41,7 +41,8 @@ if (isset($userdata) && !empty($userdata)) {
 							role="button"
 							data-toggle="dropdown"
 						>
-							<img src="public/backend/vendors/images/person.svg" alt="">
+							<!-- <img src="public/backend/vendors/images/person.svg" alt=""> -->
+							Dennis Murimi
 							<span class="user-name mt-2"></span>
 						</a>
 						<div

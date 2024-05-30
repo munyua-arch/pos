@@ -6,31 +6,38 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
-$routes->post('/', 'Home::index');
+
+$routes->get('login', 'Home::login');
+$routes->post('login', 'Home::login');
 
 $routes->get('admin-login', 'Home::adminLogin');
 $routes->post('admin-login', 'Home::adminLogin');
 
-$routes->get('dashboard/', 'Dashboard::index');
-
-$routes->get('dashboard/create-order', 'Dashboard::createOrder');
-$routes->post('dashboard/create-order', 'Dashboard::createOrder');
-
-$routes->get('dashboard/suppliers', 'Dashboard::suppliers');
-$routes->post('dashboard/suppliers', 'Dashboard::suppliers');
-
-$routes->get('dashboard/order-summary', 'Dashboard::orderSummary');
-$routes->get('dashboard/update-quantity', 'Dashboard::updateQuantity');
-$routes->get('dashboard/cancel-order/(:num)', 'Dashboard::cancelOrder/$1');
 
 
+$routes->group('', ['filter' => 'isLoggedIn'], function($routes){
+    $routes->get('dashboard/', 'Dashboard::index');
 
-$routes->get('dashboard/products', 'Dashboard::products');
-$routes->post('dashboard/products', 'Dashboard::products');
+    $routes->get('dashboard/create-order', 'Dashboard::createOrder');
+    $routes->post('dashboard/create-order', 'Dashboard::createOrder');
 
-$routes->get('dashboard/categories', 'Dashboard::categories');
-$routes->post('dashboard/categories', 'Dashboard::categories');
+    $routes->get('dashboard/suppliers', 'Dashboard::suppliers');
+    $routes->post('dashboard/suppliers', 'Dashboard::suppliers');
 
+    $routes->get('dashboard/order-summary', 'Dashboard::orderSummary');
+    $routes->get('dashboard/update-quantity', 'Dashboard::updateQuantity');
+    $routes->get('dashboard/cancel-order/(:num)', 'Dashboard::cancelOrder/$1');
+
+
+
+    $routes->get('dashboard/products', 'Dashboard::products');
+    $routes->post('dashboard/products', 'Dashboard::products');
+
+    $routes->get('dashboard/categories', 'Dashboard::categories');
+    $routes->post('dashboard/categories', 'Dashboard::categories');
+
+    $routes->get('dashboard/logout', 'Dashboard::logout');
+});
 
 // admin routes
 $routes->group('', ['filter' => 'isAdminLogged'], function($routes){

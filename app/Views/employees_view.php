@@ -29,7 +29,26 @@ $page_session = \CodeIgniter\Config\Services::session();
 						</div>
 					</div>
 
-					
+					<?php if(isset($validation)):?>
+						<div class="alert alert-danger alert-dismissible fade show" role="alert">
+							<?= $validation->listErrors()?>
+							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					<?php endif;?>
+
+					<?php if($page_session->get('employee_success')):?>
+							<div class="alert alert-success alert-dismissible fade show" role="alert">
+								<?= $page_session->get('employee_success')?>
+								<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+							</div>
+						<?php endif;?>
+
+						<?php if($page_session->get('employee_error')):?>
+							<div class="alert alert-danger alert-dismissible fade show" role="alert">
+								<?= $page_session->get('employee_error')?>
+								<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+							</div>
+						<?php endif;?>
 					
 
 
@@ -45,19 +64,7 @@ $page_session = \CodeIgniter\Config\Services::session();
                             </button>
 						</div>
 
-						<?php if($page_session->get('employee_success')):?>
-							<div class="alert alert-success alert-dismissible fade show" role="alert">
-								<?= $page_session->get('employee_success')?>
-								<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-							</div>
-						<?php endif;?>
-
-						<?php if($page_session->get('employee_error')):?>
-							<div class="alert alert-danger alert-dismissible fade show" role="alert">
-								<?= $page_session->get('employee_error')?>
-								<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-							</div>
-						<?php endif;?>
+						
 
 						<div class="pb-20">
 
@@ -111,6 +118,8 @@ $page_session = \CodeIgniter\Config\Services::session();
 
 								</tbody>
 							</table>
+							<?php else:?>
+								<p class="text-danger text-center fw-bold">Ooops...No employee data found</p>
 							<?php endif;?>
 							<!-- endif -->
 

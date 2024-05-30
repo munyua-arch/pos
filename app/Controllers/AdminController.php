@@ -55,11 +55,16 @@ class AdminController extends BaseController
         {
             if ($this->validate($rules)) 
             {
+                // create a unique id for each employee
+
+                $uniid = md5(str_shuffle('abcdefghijklmnopqrstuvwxyz'.time()));
+
                $employeeData = [
                 'employee_name' => $this->request->getPost('employee_name'),
                 'employee_email' => $this->request->getPost('employee_email'),
                 'employee_phone' => $this->request->getPost('employee_phone'),
-                'password' => password_hash($this->request->getPost('password'), PASSWORD_BCRYPT)
+                'password' => password_hash($this->request->getPost('password'), PASSWORD_BCRYPT),
+                'uniid' => $uniid
                ];
 
                if ($this->employeesModel->save($employeeData)) 

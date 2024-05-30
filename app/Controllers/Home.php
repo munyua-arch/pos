@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 use App\Models\AdminModel;
+use App\Models\EmployeesModel;
 
 class Home extends BaseController
 {
@@ -9,42 +10,62 @@ class Home extends BaseController
     {
         helper('form');
         $this->adminModel = new AdminModel();
+        $this->employeeModel = new EmployeesModel();
     }
-    public function index(): string
+    public function index()
     {
-        /*Get login data from user
-        *verify if email exists in db
-        *verify password from input
-        *assign the logged user a session with unique id
-        */
+        // /*Get login data from user
+        // *verify if email exists in db
+        // *verify password from input
+        // *assign the logged user a session with unique id
+        // */
 
+        // $data = [];
+
+        // $rules = [
+        //     'email' => 'required|valid_email',
+        //     'password' => 'required|min_length[5]|max_length[20]'
+        // ];
+
+        // if ($this->request->is('post'))
+        // {
+        //     echo "form is posting";
+        // }
+        return view('welcome_view');
+    }
+
+    public function login()
+    {
         $data = [];
 
         $rules = [
             'email' => 'required|valid_email',
-            'password' => 'required|min_length[5]|max_length[20]'
+            'password' => 'required|max_length[20]'
         ];
 
-        if ($this->request->is('post'))
+        if ($this->request->is('post')) 
         {
             if ($this->validate($rules)) 
             {
-                $email = $this->request->getPost('email');
-                $password = $this->request->getPost('password');
+                //save data to db
+                $loginuserData = [
+                    'email' => $this->request->getPost('email'),
+                    'password' => $this->request->getPost('password'),
+                ];
 
-                $userdata = $this->createEmployee->verifyEmail($email);
+                // verify if admin email exists
+                $userData = $this->employeeModel->verifyEmail($loginuserData['email']);
 
-              
-                if ($userdata) 
+                if ($userData) 
                 {
-                    // verify password
-                    if (password_verify($password, $userdata['password'])) 
+                    // verify admin password
+                    if (password_verify($loginuserData['password'], $userData['password'])) 
                     {
-                        // check of employee status is active
-                        if ($userdata['status'] == 'active') 
+                    //    check if admin account is active
+                        if ($userData['status'] === 'active') 
                         {
-                            //create a login session
-                            session()->set('logged_user', $userdata['uniid']);
+                            // create a login session for admin using uniid then redirect admin to dashboard
+                            session()->set('user_logged', $userData['uniid']);
                             return redirect()->to(base_url().'dashboard/');
                         }
                         else
@@ -52,15 +73,18 @@ class Home extends BaseController
                             session()->setTempdata('login_error', "Please Activate your account!");
                         }
                     }
-                    else{
-                        session()->setTempdata('login_error', "Wrong password entered for the email.");
+                    else
+                    {
+                        session()->setTempdata('login_error', "Wrong password or email");
                     }
-                }else {
-                    session()->setTempdata('login_error', "Employee does not exist!");
-                    
+                }
+                else
+                {
+                    session()->setTempdata('login_error', "User does not exists!");
                 }
             }
-            else{
+            else
+            {
                 $data['validation'] = $this->validator;
             }
         }

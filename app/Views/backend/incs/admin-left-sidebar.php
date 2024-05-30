@@ -2,7 +2,7 @@
 			<div class="brand-logo">
 			<a href="index.html">
 					<!-- <img src="<?= base_url() ;?>/public/backend/vendors/images/satelite.png" alt="" class="img-fluid img-thumbnail "/>	 -->
-					<h5 class="text-primary">Leave System</h5></p>
+					<h5 class="text-white">POS System</h5></p>
 					
 				</a>
 				<div class="close-sidebar" data-toggle="left-sidebar-close">

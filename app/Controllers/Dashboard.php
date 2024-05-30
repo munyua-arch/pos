@@ -172,4 +172,12 @@ class Dashboard extends BaseController
         }
         return view('categories_view');
     }
+
+    public function logout()
+    {
+        session()->remove('user_logged');
+        session()->destroy;
+
+        return redirect()->to(base_url().'login/');
+    }
 }

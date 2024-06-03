@@ -81,7 +81,7 @@ $page_session = \CodeIgniter\Config\Services::session();
 					</div> 
 
 					<div class="d-flex justify-content-center mt-5">
-						<p>Are you an <strong>Employee</strong>? <a href="<?= base_url()?>">Login Here</a></p>
+						<p>Are you an <strong>Employee</strong>? <a href="<?= base_url().'login/'?>">Login Here</a></p>
 					</div>
 </div>
 <?= $this->endSection() ?>

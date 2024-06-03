@@ -6,7 +6,6 @@ use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\SuppliersModel;
 use App\Models\ProductModel;
-use App\Models\CategoryModel;
 use App\Models\OrderModel;
 
 
@@ -18,7 +17,6 @@ class Dashboard extends BaseController
         
         $this->suppliersModel = new SuppliersModel();
         $this->productModel = new ProductModel();
-        $this->categoryModel = new CategoryModel();
         $this->orderModel = new OrderModel();
         
     }
@@ -112,10 +110,11 @@ class Dashboard extends BaseController
 
     public function orderSummary()
     {
-        
+        $data = [];
+        $data['prints'] = $this->orderModel->findAll();
         
 
-        return view('order_summary_view');
+        return view('order_summary_view', $data);
     }
 
     public function suppliers()
@@ -141,38 +140,7 @@ class Dashboard extends BaseController
 
         return view('products_view', $data);
     }
-
-    public function categories()
-    {
-        $data = [];
-
-        $rules = [
-            'category_name' => 'required'
-        ];
-
-        if ($this->request->is('post')) 
-        {
-            if ($this->validate($rules)) 
-            {
-                $category = $this->request->getPost('category_name', FILTER_SANITIZE_STRING);
-
-                if ($this->categoryModel->save($category)) 
-                {
-                    session()->getTempdata('category_success', 'New Category has added successfully');
-                }
-                else
-                {
-                    session()->getTempdata('category_error', 'Failed to add category, please try again');
-                }
-            }
-            else
-            {
-                echo "invalid form";
-            }
-        }
-        return view('categories_view');
-    }
-
+    
     public function logout()
     {
         session()->remove('user_logged');

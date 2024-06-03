@@ -6,7 +6,7 @@ use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\SuppliersModel;
 use App\Models\ProductModel;
-use App\Models\CategoryModel;
+use App\Models\IncomingModel;
 use App\Models\OrderModel;
 use App\Models\EmployeesModel;
 use App\Models\AdminModel;
@@ -19,7 +19,7 @@ class AdminController extends BaseController
         
         $this->suppliersModel = new SuppliersModel();
         $this->productModel = new ProductModel();
-        $this->categoryModel = new CategoryModel();
+        $this->incomingModel = new IncomingModel();
         $this->orderModel = new OrderModel();
         $this->employeesModel = new EmployeesModel();
         $this->adminModel = new AdminModel();
@@ -187,35 +187,73 @@ class AdminController extends BaseController
         return view('admin_products_view', $data);
     }
 
-    public function categories()
+    public function incomingGoods()
     {
         $data = [];
+        $data['suppliers'] = $this->suppliersModel->findAll();
+        $data['goods'] = $this->productModel->findAll();
 
         $rules = [
-            'category_name' => 'required'
+            'entry_date' => 'required',
+            'supplier' => 'required',
+            'goods' => 'required',
+            'quantity' => 'required',
         ];
-
+        
         if ($this->request->is('post')) 
         {
-            if ($this->validate($rules)) 
+            if($this->validate($rules))
             {
-                $category = $this->request->getPost('category_name', FILTER_SANITIZE_STRING);
+                // sace the form
+                $incomingData = [
+                    'entry_date' => $this->request->getPost('entry_date'),
+                    'supplier' => $this->request->getPost('supplier'),
+                    'goods' => $this->request->getPost('goods'),
+                    'quantity' => $this->request->getPost('quantity')
+                ];
 
-                if ($this->categoryModel->save($category)) 
+                // find the selected  good and update its qnt
+                $selectedGood = $this->productModel->where('product_name', $incomingData['goods'])->first();
+
+                
+
+                // save the data only after qnt has been updated in the products table
+                if ($selectedGood) 
                 {
-                    session()->getTempdata('category_success', 'New Category has added successfully');
+                    // add new qnt to old qnt
+                    $newQnt = $selectedGood['in_stock'] + $incomingData['quantity'];
+
+                    $updated = $this->productModel->updateStock($incomingData['goods'], $newQnt);
+
+
+                    if ($updated) 
+                    {
+                        if ($this->incomingModel->save($incomingData)) 
+                        {
+                                session()->setFlashData('income_success', 'New arrival saved successfully!');
+                        }
+                        else {
+                            session()->setFlashData('income_error', 'Failed to save new arrival, please try again!');
+                        }
+                    }
+                    else
+                    {
+                        session()->setFlashData('income_error', 'Failed to update new quantity, please try again!');
+                    }
                 }
                 else
                 {
-                    session()->getTempdata('category_error', 'Failed to add category, please try again');
+                    session()->setFlashData('income_error', 'Failed to find the product, please try again!');
                 }
+
+
+               
             }
-            else
-            {
-                echo "invalid form";
+            else {
+                $data['validation'] = $this->validator;
             }
         }
-        return view('admin_categories_view');
+        return view('incoming_goods_view', $data);
     }
 
     public function admin()

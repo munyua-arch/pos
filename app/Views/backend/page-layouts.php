@@ -53,6 +53,19 @@ $page_title = 'POS | Dashboard';
 
         <?= $this->renderSection('stylesheets'); ?>
 	</head>
+
+	<style>
+
+		@media print{
+			/* body * {
+				display: none;
+			} */
+
+			#content, #content * {
+				display: block;
+			}
+		}
+	</style>
 	<body>
 
 

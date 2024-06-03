@@ -4,15 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class CategoryModel extends Model
+class IncomingModel extends Model
 {
-    protected $table            = 'categories';
+    protected $table            = 'incoming';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id', 'category_name'];
+    protected $allowedFields    = ['id', 'entry_date', 'supplier', 'goods', 'quantity'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

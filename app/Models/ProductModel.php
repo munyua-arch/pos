@@ -28,6 +28,22 @@ class ProductModel extends Model
         }
     }
 
+    public function updateStock($name , $data)
+    {
+        $builder = $this->db->table('products');
+        $builder->where('product_name', $name);
+        
+        // Execute the update query
+        $builder->update(['in_stock' => $data]);
+    
+        // Check the affected rows
+        if ($this->db->affectedRows() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     // function to deduct stock
     // public function deductStock($productName, $quantity)
     // {

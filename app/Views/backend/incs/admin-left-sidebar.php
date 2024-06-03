@@ -37,9 +37,9 @@
 							</a>
 						</li>
 						<li>
-							<a href="<?= base_url().'admindashboard/admin-categories'?>" class="dropdown-toggle no-arrow">
+							<a href="<?= base_url().'admindashboard/incoming-goods'?>" class="dropdown-toggle no-arrow">
 								<span class="micon bi bi-stack"></span>
-								<span class="mtext">Categories</span>
+								<span class="mtext">Incoming Goods</span>
 							</a>
 						</li>
 

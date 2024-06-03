@@ -55,8 +55,8 @@ $routes->group('', ['filter' => 'isAdminLogged'], function($routes){
     $routes->get('admindashboard/admin-products', 'AdminController::products');
     $routes->post('admindashboard/admin-products', 'AdminController::products');
 
-    $routes->get('admindashboard/admin-categories', 'AdminController::categories');
-    $routes->post('admindashboard/admin-categories', 'AdminController::categories');
+    $routes->get('admindashboard/incoming-goods', 'AdminController::incomingGoods');
+    $routes->post('admindashboard/incoming-goods', 'AdminController::incomingGoods');
 
     $routes->get('admindashboard/admin', 'AdminController::admin');
     $routes->post('admindashboard/admin', 'AdminController::admin');

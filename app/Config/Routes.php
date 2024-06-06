@@ -61,6 +61,9 @@ $routes->group('', ['filter' => 'isAdminLogged'], function($routes){
     $routes->get('admindashboard/admin', 'AdminController::admin');
     $routes->post('admindashboard/admin', 'AdminController::admin');
 
+    $routes->get('admindashboard/roles', 'AdminController::roles');
+    $routes->post('admindashboard/roles', 'AdminController::roles');
+
     $routes->get('admindashboard/logout', 'AdminController::logout');
 });
 

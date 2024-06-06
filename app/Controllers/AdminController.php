@@ -10,6 +10,8 @@ use App\Models\IncomingModel;
 use App\Models\OrderModel;
 use App\Models\EmployeesModel;
 use App\Models\AdminModel;
+use App\Models\RoleModel;
+use App\Models\PermissionModel;
 
 class AdminController extends BaseController
 {
@@ -23,6 +25,8 @@ class AdminController extends BaseController
         $this->orderModel = new OrderModel();
         $this->employeesModel = new EmployeesModel();
         $this->adminModel = new AdminModel();
+        $this->roleModel = new RoleModel();
+        $this->permissionModel = new PermissionModel();
         
     }
 
@@ -301,6 +305,88 @@ class AdminController extends BaseController
             }
         }
         return view('admin_view', $data);
+    }
+
+    public function roles()
+    {
+        $data = [];
+
+        $formType = $this->request->getPost('form_type');
+
+        if ($formType === 'role_form') 
+        {
+            $rules = [
+                'role_type' => 'required',
+                'permissions' => 'required' 
+            ];
+    
+            if ($this->request->is('post')) 
+            {
+                if ($this->validate($rules)) 
+                {
+                    $roleData =[
+                        'role_type' => $this->request->getPost('role_type', FILTER_SANITIZE_STRING),
+                        'permissions' => $this->request->getPost('permissions', FILTER_SANITIZE_STRING)
+                    ];
+                         
+                    
+    
+                    // check if permissions is an array
+                    if (is_array($roleData['permissions'])) 
+                    {
+                        // loop through each permission and save to db
+                        foreach($roleData['permissions'] as $roleData['permission'])
+                        {
+                            if ($this->roleModel->save($roleData)) 
+                            {
+                                session()->setTempdata('role_success', 'New role added successfully');
+                            }
+                            else
+                            {
+                                session()->setTempdata('role_error', 'Failed to add new role');
+                            }
+                        }
+    
+                    }
+                }
+                else {
+                    $data['validation'] = $this->validator;
+                }
+            }
+        }
+
+
+        // logic to handle permission form
+        if ($formType === 'permission_form') 
+        {
+            $rules = [
+                'permission_name' => 'required'
+            ];
+
+            if ($this->request->is('post'))
+            {
+                if ($this->validate($rules)) 
+                {
+                    $formData = [
+                    'permission' => $this->request->getPost('permission_name', FILTER_SANITIZE_STRING)
+                    ];
+
+                    
+                    if ($this->permissionModel->save($formData)) 
+                    {
+                        session()->setTempdata('permission_success', "Permission added successfully");
+                    }
+                    else {
+                        session()->setTempdata('permission_error', "Failed to create permission type");
+                    }
+                }
+                else {
+                    $data['permission_validation'] = $this->validator;
+                }
+            }
+        }
+
+        return view('roles_view', $data);
     }
 
     public function logout()

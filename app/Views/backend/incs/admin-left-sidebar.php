@@ -50,6 +50,13 @@
 							</a>
 						</li>
 
+						<li>
+							<a href="<?= base_url().'admindashboard/roles'?>" class="dropdown-toggle no-arrow">
+								<span class="micon bi bi-people-fill"></span
+								><span class="mtext">Roles & Permissions</span>
+							</a>
+						</li>
+
 						<li class="dropdown">
 							<a href="javascript:;" class="dropdown-toggle">
 								<span class="micon bi bi-gear"></span

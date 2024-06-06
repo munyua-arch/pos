@@ -22,8 +22,11 @@ $page_session = \CodeIgniter\Config\Services::session();
 										<li class="breadcrumb-item">
 											<a href="<?= base_url().'dashboard/'?>">Home</a>
 										</li>
+										<li class="breadcrumb-item" aria-current="page">
+											<a href="<?= base_url().'dashboard/create-order'?>">Create Order</a>
+										</li>
 										<li class="breadcrumb-item active" aria-current="page">
-											Suppliers
+											Order Summary
 										</li>
 									</ol>
 								</nav>
@@ -46,8 +49,7 @@ $page_session = \CodeIgniter\Config\Services::session();
 			<h4 class="text-center mb-30 weight-600">INVOICE</h4>
 			<h5 class="text-center mb-30 weight-600">Business name</h5>
 			<h5>P.O Box 122-60401, Chogoria</h5>
-			<h5>Phone: +254715024420</h5>
-			<h5>Email: info@pichsafe.com</h5>
+			
 
 				<div class="row pb-30 mt-3">
 					<div class="col-md-6">
